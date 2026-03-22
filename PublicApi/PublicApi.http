@@ -1,6 +1,9 @@
-@PublicApi_HostAddress = https://app-awapi-scrum-centralus-02.azurewebsites.net
+@PublicApi_HostAddress = http://localhost:5151
 
 GET {{PublicApi_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+POST {{PublicApi_HostAddress}}/api/v1/account
+Accept: application/json
