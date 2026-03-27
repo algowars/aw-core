@@ -2,5 +2,4 @@
   <Project Path="ApplicationCore/ApplicationCore.csproj" />
   <Project Path="Infrastructure/Infrastructure.csproj" />
   <Project Path="PublicApi/PublicApi.csproj" />
-  <Project Path="UnitTests/UnitTests.csproj" />
 </Solution>

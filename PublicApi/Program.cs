@@ -4,6 +4,7 @@ using Asp.Versioning;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplicationCore();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddApiVersioning(o =>
