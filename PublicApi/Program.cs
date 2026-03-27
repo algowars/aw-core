@@ -1,10 +1,15 @@
 using ApplicationCore;
+using ApplicationCore.Settings;
 using Asp.Versioning;
+using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionStringsOptions = new ConnectionStringsOptions();
+builder.Configuration.GetSection("ConnectionStrings").Bind(connectionStringsOptions);
+
 builder.Services.AddApplicationCore();
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddInfrastructure();
 
 builder.Services.AddControllers();
 builder.Services.AddApiVersioning(o =>
