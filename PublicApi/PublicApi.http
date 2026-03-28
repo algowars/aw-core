@@ -4,3 +4,6 @@ GET {{PublicApi_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+POST {{PublicApi_HostAddress}}/api/v1/account
+Accept: application/json
