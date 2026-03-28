@@ -29,11 +29,26 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddOpenApi();
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddDefaultPolicy(policy =>
+            policy
+                .WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+        );
+    });
+}
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseCors();
 }
 
 app.UseHttpsRedirection();
