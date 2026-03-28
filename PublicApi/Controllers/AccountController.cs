@@ -1,8 +1,8 @@
-using System.Security.Claims;
 using ApplicationCore.Services;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using PublicApi.Dtos;
+using System.Security.Claims;
 
 namespace PublicApi.Controllers;
 

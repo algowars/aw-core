@@ -1,6 +1,6 @@
-using System.Reflection;
 using ApplicationCore.Services;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace ApplicationCore;
 
