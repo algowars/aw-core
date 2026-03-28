@@ -19,6 +19,14 @@ builder.Services.AddApiVersioning(o =>
     o.ReportApiVersions = true;
 });
 
+string licenseKey = builder.Configuration["MediatR:LicenseKey"];
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.LicenseKey = "<License Key here>";
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();

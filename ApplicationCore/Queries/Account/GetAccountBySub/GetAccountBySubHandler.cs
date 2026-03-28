@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ApplicationCore.Dtos;
+﻿using ApplicationCore.Dtos;
+using ApplicationCore.Interfaces.Repositories;
 using Ardalis.Result;
 
 namespace ApplicationCore.Queries.Account.GetAccountBySub;
 
-public sealed class GetAccountBySubHandler() : IQueryHandler<GetAccountBySubQuery, AccountDto>
+public sealed class GetAccountBySubHandler(IAccountRepository accountRepository)
+    : IQueryHandler<GetAccountBySubQuery, AccountModel>
 {
-    public async Task<Result<AccountDto>> Handle(
+    public async Task<Result<AccountModel>> Handle(
         GetAccountBySubQuery request,
         CancellationToken cancellationToken
-    ) { }
+    )
+    {
+        var account = await accountRepository.GetBySubAsync(request.Sub, cancellationToken);
+        return Result.Success(account);
+    }
 }

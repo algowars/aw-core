@@ -1,16 +1,24 @@
 using ApplicationCore.Dtos;
+using ApplicationCore.Queries.Account.GetAccountBySub;
+using Ardalis.Result;
+using MediatR;
 
 namespace ApplicationCore.Services;
 
 public interface IAccountAppService
 {
-    AccountDto GetBySubAsync(string sub, CancellationToken cancellationToken);
+    Task<Result<AccountDto>> GetBySubAsync(string sub, CancellationToken cancellationToken);
 }
 
-public sealed class AccountAppService : IAccountAppService
+public sealed class AccountAppService(IMediator mediator) : IAccountAppService
 {
-    public AccountDto GetBySubAsync(string sub, CancellationToken cancellationToken)
+    public async Task<Result<AccountDto>> GetBySubAsync(
+        string sub,
+        CancellationToken cancellationToken
+    )
     {
-       return new AccountDto(Guid.NewGuid(), sub, new DateTime());
+        var result = await mediator.Send(new GetAccountBySubQuery(sub), cancellationToken);
+
+        return result.Map(source => new AccountDto(source.Id, source.Username, source.CreatedOn));
     }
 }

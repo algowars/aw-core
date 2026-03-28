@@ -1,5 +1,3 @@
-﻿using ApplicationCore.Dtos;
+﻿namespace ApplicationCore.Queries.Account.GetAccountBySub;
 
-namespace ApplicationCore.Queries.Account.GetAccountBySub;
-
-public sealed record GetAccountBySubQuery(string Sub) : IQuery<AccountDto>;
+public sealed record GetAccountBySubQuery(string Sub) : IQuery<AccountModel>;
