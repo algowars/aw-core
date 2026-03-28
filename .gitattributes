@@ -1,0 +1,8 @@
+# Use LF for all text files
+*.cs     text eol=lf
+*.csproj text eol=lf
+*.sln    text eol=lf
+*.slnx   text eol=lf
+*.xml    text eol=lf
+*.json   text eol=lf
+*.md     text eol=lf
