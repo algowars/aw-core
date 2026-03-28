@@ -23,13 +23,20 @@ string licenseKey = builder.Configuration["MediatR:LicenseKey"];
 
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.LicenseKey = "<License Key here>";
+    cfg.LicenseKey = licenseKey;
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
 builder.Services.AddOpenApi();
 
 string[] allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+
+if (!allowedOrigins.Any())
+{
+    throw new InvalidOperationException("No allowed origins configured for CORS.");
+}
+
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
