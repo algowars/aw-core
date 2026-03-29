@@ -31,17 +31,11 @@ builder.Services.AddOpenApi();
 
 string[] allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
 
-if (!allowedOrigins.Any())
-{
-    throw new InvalidOperationException("No allowed origins configured for CORS.");
-}
-
-
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
         policy
-            .WithOrigins(allowedOrigins)
+            .WithOrigins(["https://web-aw-scrum-01.vercel.app"])
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials()
