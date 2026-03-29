@@ -2,6 +2,7 @@ using ApplicationCore;
 using ApplicationCore.Settings;
 using Asp.Versioning;
 using Infrastructure;
+using Microsoft.Extensions.Options;
 using PublicApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,12 +20,11 @@ builder.Services.AddApiVersioning(o =>
     o.ReportApiVersions = true;
 });
 
-var serviceProvider = builder.Services.BuildServiceProvider();
-var mediatRSettings = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<MediatRSettings>>().Value;
-
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.LicenseKey = mediatRSettings.LicenseKey;
+    cfg.LicenseKey = builder.Configuration
+        .GetSection("MediatRSettings:LicenseKey")
+        .Get<string>();
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
