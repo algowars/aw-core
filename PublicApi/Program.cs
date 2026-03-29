@@ -2,11 +2,11 @@ using ApplicationCore;
 using ApplicationCore.Settings;
 using Asp.Versioning;
 using Infrastructure;
+using PublicApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionStringsOptions = new ConnectionStringsOptions();
-builder.Configuration.GetSection("ConnectionStrings").Bind(connectionStringsOptions);
+builder.Services.RegisterAppSettings(builder.Configuration);
 
 builder.Services.AddApplicationCore();
 builder.Services.AddInfrastructure();
@@ -19,11 +19,12 @@ builder.Services.AddApiVersioning(o =>
     o.ReportApiVersions = true;
 });
 
-string licenseKey = builder.Configuration["MediatR:LicenseKey"];
+var serviceProvider = builder.Services.BuildServiceProvider();
+var mediatRSettings = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<MediatRSettings>>().Value;
 
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.LicenseKey = licenseKey;
+    cfg.LicenseKey = mediatRSettings.LicenseKey;
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
@@ -35,7 +36,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
         policy
-            .WithOrigins(["https://web-aw-scrum-01.vercel.app"])
+            .WithOrigins(allowedOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials()

@@ -14,7 +14,7 @@ public static class DependencyInjection
             (sp, options) =>
             {
                 var connectionStringOptions = sp.GetRequiredService<
-                    IOptions<ConnectionStringsOptions>
+                    IOptions<ConnectionStringsSettings>
                 >().Value;
                 options.UseNpgsql(connectionStringOptions.DefaultConnection);
             }
