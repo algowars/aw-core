@@ -1,11 +1,13 @@
-﻿namespace ApplicationCore.Domain.Account;
+﻿using ApplicationCore.Dtos;
+
+namespace ApplicationCore.Domain.Account;
 
 public interface IAccountContext
 {
-    AccountModel? Account { get; }
+    AccountDto? Account { get; set; }
 }
 
 public sealed class AccountContext : IAccountContext
 {
-    public AccountModel? Account { get; private set; }
+    public AccountDto? Account { get; set; }
 }

@@ -13,6 +13,9 @@ builder.Services.AddApplicationCore();
 builder.Services.AddInfrastructure();
 
 builder.Services.AddControllers();
+
+builder.Services.RegisterAllUserAndGlobalRateLimitPolicies(typeof(Program).Assembly);
+
 builder.Services.AddApiVersioning(o =>
 {
     o.DefaultApiVersion = new ApiVersion(1, 0);
@@ -22,24 +25,19 @@ builder.Services.AddApiVersioning(o =>
 
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.LicenseKey = builder.Configuration
-        .GetSection("MediatRSettings:LicenseKey")
-        .Get<string>();
+    cfg.LicenseKey = builder.Configuration.GetSection("MediatRSettings:LicenseKey").Get<string>();
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
 builder.Services.AddOpenApi();
 
-string[] allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+string[] allowedOrigins =
+    builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
-        policy
-            .WithOrigins(allowedOrigins)
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials()
+        policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials()
     );
 });
 

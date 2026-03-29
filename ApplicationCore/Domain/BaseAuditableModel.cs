@@ -1,4 +1,6 @@
-﻿namespace ApplicationCore.Domain;
+﻿using ApplicationCore.Domain.Account;
+
+namespace ApplicationCore.Domain;
 
 public abstract class BaseAuditableModel<TId> : BaseModel<TId>
     where TId : notnull

@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Dtos;
+﻿using ApplicationCore.Domain.Account;
+using ApplicationCore.Dtos;
 using ApplicationCore.Interfaces.Repositories;
 using Ardalis.Result;
 

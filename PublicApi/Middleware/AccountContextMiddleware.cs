@@ -1,0 +1,34 @@
+using ApplicationCore.Domain.Account;
+using ApplicationCore.Services;
+using PublicApi.Attributes;
+
+namespace PublicApi.Middleware;
+
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
+public class AccountContextMiddleware(
+    AccountAppService accountAppService,
+    IAccountContext accountContext
+) : IMiddleware
+{
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    {
+        var endpoint = context.GetEndpoint();
+        if (endpoint?.Metadata.GetMetadata<RequiresAccountAttribute>() == null)
+        {
+            await next(context);
+            return;
+        }
+
+        string? sub = context.User?.FindFirstValue("sub");
+        if (!string.IsNullOrEmpty(sub))
+        {
+            var account = await accountAppService.GetBySubAsync(sub, context.RequestAborted);
+            accountContext.Account = account;
+        }
+
+        await next(context);
+    }
+}

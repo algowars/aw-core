@@ -1,34 +1,58 @@
+using System.Security.Claims;
+using ApplicationCore.Domain.Account;
 using ApplicationCore.Services;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using PublicApi; // Ensure the namespace for the attributes
+using PublicApi.Attributes;
 using PublicApi.Dtos;
-using System.Security.Claims;
 
 namespace PublicApi.Controllers;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public class AccountController(IAccountAppService accountAppService) : ControllerBase
+public class AccountController(IAccountAppService accountAppService, IAccountContext accountContext)
+    : ControllerBase
 {
     [HttpGet]
+    [UserRateLimit(30, 60), GlobalRateLimit(300, 60)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAccountBySub(CancellationToken cancellationToken)
+    [RequiresAccount]
+    public IActionResult GetAccountBySub()
     {
-        string sub = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var account = accountContext.Account;
+        if (account == null)
+        {
+            return NotFound();
+        }
 
-        var result = await accountAppService.GetBySubAsync(sub!, cancellationToken);
-
-        return result.IsSuccess ? Ok(result.Value) : NotFound();
+        return Ok(account);
     }
 
-    //[HttpPost]
-    //[ProducesResponseType(StatusCodes.Status201Created)]
-    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-    //public async Task<IActionResult> CreateAsync([FromBody] CreateAccountDto createAccountDto, CancellationToken cancellationToken)
-    //{
-    //    var created = accountAppService.GetBySubAsync("test", cancellationToken);
-    //    return Created(string.Empty, created);
-    //}
+    [HttpPost]
+    [UserRateLimit(3, 60), GlobalRateLimit(50, 60)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CreateAccountAsync(
+        [FromBody] CreateAccountDto createAccountDto,
+        CancellationToken cancellationToken
+    )
+    {
+        string? sub = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (sub is null)
+        {
+            return BadRequest();
+        }
+
+        var created = await accountAppService.CreateAccountAsync(
+            createAccountDto.Username,
+            sub,
+            createAccountDto.ImageUrl,
+            cancellationToken
+        );
+        return Created(string.Empty, created);
+    }
 }

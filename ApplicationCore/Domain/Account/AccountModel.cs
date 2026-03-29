@@ -1,4 +1,4 @@
-using ApplicationCore.Domain;
+namespace ApplicationCore.Domain.Account;
 
 public sealed class AccountModel : BaseModel<Guid>
 {
