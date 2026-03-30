@@ -4,6 +4,7 @@ using Asp.Versioning;
 using Infrastructure;
 using Microsoft.Extensions.Options;
 using PublicApi;
+using PublicApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,10 @@ builder.Services.AddControllers();
 
 builder.Services.RegisterAllUserAndGlobalRateLimitPolicies(typeof(Program).Assembly);
 
+builder.Services.AddAuthTokenValidation(builder.Configuration);
+builder.Services.AddRbacAuthorization();
+
+builder.Services.AddScoped<AccountContextMiddleware>();
 builder.Services.AddApiVersioning(o =>
 {
     o.DefaultApiVersion = new ApiVersion(1, 0);
@@ -50,7 +55,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors();
+app.UseGlobalExceptionHandler();
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseUserContextMiddleware();
 app.MapControllers();
 
 app.Run();

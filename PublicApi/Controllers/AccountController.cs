@@ -2,8 +2,8 @@ using System.Security.Claims;
 using ApplicationCore.Domain.Account;
 using ApplicationCore.Services;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PublicApi; // Ensure the namespace for the attributes
 using PublicApi.Attributes;
 using PublicApi.Dtos;
 
@@ -16,6 +16,7 @@ public class AccountController(IAccountAppService accountAppService, IAccountCon
     : ControllerBase
 {
     [HttpGet]
+    [Authorize]
     [UserRateLimit(30, 60), GlobalRateLimit(300, 60)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -32,6 +33,7 @@ public class AccountController(IAccountAppService accountAppService, IAccountCon
     }
 
     [HttpPost]
+    [Authorize]
     [UserRateLimit(3, 60), GlobalRateLimit(50, 60)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

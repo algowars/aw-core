@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 public class AccountContextMiddleware(
-    AccountAppService accountAppService,
+    IAccountAppService accountAppService,
     IAccountContext accountContext
 ) : IMiddleware
 {
